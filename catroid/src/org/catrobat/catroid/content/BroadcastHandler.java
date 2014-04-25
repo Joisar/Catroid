@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.content;
 
+import android.util.Pair;
+
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -30,6 +32,7 @@ import org.catrobat.catroid.common.BroadcastSequenceMap;
 import org.catrobat.catroid.common.BroadcastWaitSequenceMap;
 import org.catrobat.catroid.content.actions.BroadcastNotifyAction;
 import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.ui.ScriptActivity;
 
 import java.util.ArrayList;
 
@@ -65,7 +68,7 @@ public final class BroadcastHandler {
 		if (!BroadcastWaitSequenceMap.containsKey(broadcastMessage)) {
 			addBroadcastMessageToBroadcastWaitSequenceMap(look, event, broadcastMessage);
 		} else {
-			if (BroadcastWaitSequenceMap.getCurrentBroadcastEvent() == event
+			if (BroadcastWaitSequenceMap.getCurrentBroadcastEvent().equals(event)
 					&& BroadcastWaitSequenceMap.getCurrentBroadcastEvent() != null) {
 				for (SequenceAction action : BroadcastWaitSequenceMap.get(broadcastMessage)) {
 					BroadcastWaitSequenceMap.getCurrentBroadcastEvent().resetNumberOfFinishedReceivers();
@@ -113,31 +116,14 @@ public final class BroadcastHandler {
 	private static boolean handleAction(Action action) {
 		for (Sprite sprites : ProjectManager.getInstance().getCurrentProject().getSpriteList()) {
 			for (Action actionOfLook : sprites.look.getActions()) {
-				if (actionOfLook instanceof SequenceAction && ((SequenceAction) actionOfLook).getActions().size > 0
-						&& ((SequenceAction) actionOfLook).getActions().get(0) == action) {
-					Look.actionsToRestartAdd(actionOfLook);
-					return true;
-				} else {
-					if (action instanceof SequenceAction && ((SequenceAction) action).getActions().size > 0
-							&& ((SequenceAction) action).getActions().get(0) == actionOfLook) {
-						Look.actionsToRestartAdd(action);
+				{
+					Pair pair = new Pair(action, actionOfLook);
+					Action actionToRestart = ScriptActivity.getActionToRestartMap().get(pair);
+					if (actionToRestart != null) {
+						Look.actionsToRestartAdd(actionToRestart);
 						return true;
-					} else {
-						if (action == actionOfLook) {
-							Look.actionsToRestartAdd(actionOfLook);
-							return true;
-						} else {
-							if (actionOfLook instanceof SequenceAction
-									&& ((SequenceAction) actionOfLook).getActions().size > 0
-									&& action instanceof SequenceAction
-									&& ((SequenceAction) action).getActions().size > 0
-									&& ((SequenceAction) actionOfLook).getActions().get(0) == ((SequenceAction) action)
-											.getActions().get(0)) {
-								Look.actionsToRestartAdd(action);
-								return true;
-							}
-						}
 					}
+					return false;
 				}
 			}
 		}
@@ -154,13 +140,13 @@ public final class BroadcastHandler {
 				if (actionOfLook instanceof SequenceAction && ((SequenceAction) actionOfLook).getActions().size > 0) {
 					actualActionOfLook = ((SequenceAction) actionOfLook).getActions().get(0);
 				}
-				if (sequenceActionWithBroadcastNotifyAction == actionOfLook) {
+				if (sequenceActionWithBroadcastNotifyAction.equals(actionOfLook)) {
 					((BroadcastNotifyAction) ((SequenceAction) actionOfLook).getActions().get(1)).getEvent()
 							.resetNumberOfFinishedReceivers();
 					Look.actionsToRestartAdd(actionOfLook);
 					return true;
 				} else {
-					if (actualActionOfLook != null && actualActionOfLook == actualAction) {
+					if (actualActionOfLook != null && actualActionOfLook.equals(actualAction)) {
 						((BroadcastNotifyAction) ((SequenceAction) actionOfLook).getActions().get(1)).getEvent()
 								.resetEventAndResumeScript();
 						Look.actionsToRestartAdd(actionOfLook);

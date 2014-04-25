@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,8 +39,12 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-import org.catrobat.catroid.ProjectManager;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
@@ -53,6 +58,7 @@ import org.catrobat.catroid.ui.fragment.ScriptActivityFragment;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
 import org.catrobat.catroid.ui.fragment.SoundFragment;
 
+import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
 
 public class ScriptActivity extends BaseActivity {
@@ -88,6 +94,8 @@ public class ScriptActivity extends BaseActivity {
 	private boolean isSoundFragmentHandleAddButtonHandled = false;
 	private boolean isLookFragmentFromSetLookBrickNew = false;
 	private boolean isLookFragmentHandleAddButtonHandled = false;
+
+	private static HashMap<Pair<Action, Action>, Action> actionToRestartMap = new HashMap<Pair<Action, Action>, Action>();
 
 	private ImageButton buttonAdd;
 
@@ -256,9 +264,49 @@ public class ScriptActivity extends BaseActivity {
 		updateHandleAddButtonClickListener();
 
 		if (requestCode == PreStageActivity.REQUEST_RESOURCES_INIT && resultCode == RESULT_OK) {
+			precomputeActionsForBroadcastEvents();
 			Intent intent = new Intent(ScriptActivity.this, StageActivity.class);
 			PreStageActivity.addDroneSupportExtraToNewIntentIfPresentInOldIntent(data, intent);
 			startActivity(intent);
+		}
+	}
+
+	private void precomputeActionsForBroadcastEvents() {
+
+		for (Sprite sprite : ProjectManager.getInstance().getCurrentProject().getSpriteList()) {
+			for (Action action : sprite.look.getActions()) {
+				Action firstAction = null;
+				if (action instanceof SequenceAction && ((SequenceAction) action).getActions().size > 0) {
+					firstAction = ((SequenceAction) action).getActions().get(0);
+				}
+
+				for (Sprite spriteOfLook : ProjectManager.getInstance().getCurrentProject().getSpriteList()) {
+					for (Action actionOfLook : spriteOfLook.look.getActions()) {
+						Action firstActionOfLook = null;
+
+						if (actionOfLook instanceof SequenceAction
+								&& ((SequenceAction) actionOfLook).getActions().size > 0) {
+							firstActionOfLook = ((SequenceAction) actionOfLook).getActions().get(0);
+						}
+
+						Pair pair = new Pair(action, actionOfLook);
+
+						if (firstAction != null && firstActionOfLook != null && firstActionOfLook.equals(firstAction)) {
+							actionToRestartMap.put(pair, action);
+							break;
+						} else if (firstAction != null && firstAction.equals(actionOfLook)) {
+							actionToRestartMap.put(pair, action);
+							break;
+						} else if (action.equals(actionOfLook)) {
+							actionToRestartMap.put(pair, actionOfLook);
+							break;
+						} else if (firstActionOfLook != null && firstActionOfLook.equals(action)) {
+							actionToRestartMap.put(pair, actionOfLook);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -520,5 +568,9 @@ public class ScriptActivity extends BaseActivity {
 
 		updateHandleAddButtonClickListener();
 		fragmentTransaction.commit();
+	}
+
+	public static HashMap<Pair<Action, Action>, Action> getActionToRestartMap() {
+		return actionToRestartMap;
 	}
 }
