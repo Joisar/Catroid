@@ -1072,6 +1072,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 
 		solo.clickOnCheckBox(0);
 		solo.clickOnCheckBox(1);
+		solo.sleep(400);
 		assertFalse("Select All is still shown", solo.getView(R.id.select_all).isShown());
 
 		solo.goBack();

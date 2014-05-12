@@ -50,8 +50,10 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.LoadProjectTask;
 import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
 import org.catrobat.catroid.stage.PreStageActivity;
+import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
+import org.catrobat.catroid.ui.dialogs.ExecuteOnceDialog;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 import org.catrobat.catroid.ui.dialogs.TermsOfUseDialogFragment;
 import org.catrobat.catroid.utils.DownloadUtil;
@@ -328,5 +330,19 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 	@Override
 	public void onLoadProjectFailure() {
 
+	}
+
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == RESULT_OK) {
+			if (data.getStringExtra("started_from").equals(ExecuteOnceDialog.DIALOG_FRAGMENT_TAG)) {
+				Intent intent = new Intent(this, StageActivity.class);
+				startActivity(intent);
+			}
+
+		}
 	}
 }

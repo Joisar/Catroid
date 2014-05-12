@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.jayway.android.robotium.solo.Solo;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -72,10 +73,18 @@ public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMen
 		super.tearDown();
 	}
 
+	private void setExecutedOnce(boolean executedOnce)
+	{
+		ProjectManager.getInstance().getCurrentProject().setProgramExecutedAtLeastOnce(executedOnce);
+	}
+
+
 	public void testLicenceLinkPresent() throws Throwable {
 		setTestUrl();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
+
+		this.setExecutedOnce(true);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
@@ -90,6 +99,7 @@ public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMen
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, Constants.NO_TOKEN).commit();
 
+		this.setExecutedOnce(true);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
 
@@ -102,6 +112,7 @@ public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMen
 		setTestUrl();
 		UiTestUtils.createValidUser(getActivity());
 
+		this.setExecutedOnce(true);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
 
@@ -113,6 +124,7 @@ public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMen
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, "").commit();
+		this.setExecutedOnce(true);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
@@ -132,6 +144,7 @@ public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMen
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, "wrong_token").commit();
 
+		this.setExecutedOnce(true);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
 		fillLoginDialog(true);
@@ -145,7 +158,7 @@ public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMen
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
-
+		this.setExecutedOnce(true);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
 		fillLoginDialog(false);

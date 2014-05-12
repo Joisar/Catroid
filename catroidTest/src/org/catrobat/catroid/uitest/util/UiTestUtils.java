@@ -621,6 +621,8 @@ public final class UiTestUtils {
 		projectManager.setProject(project);
 		projectManager.setCurrentSprite(firstSprite);
 		projectManager.setCurrentScript(testScript);
+
+		projectManager.getCurrentProject().setProgramExecutedAtLeastOnce(true);
 		StorageHandler.getInstance().saveProject(project);
 
 		// the application version is needed when the project will be uploaded
