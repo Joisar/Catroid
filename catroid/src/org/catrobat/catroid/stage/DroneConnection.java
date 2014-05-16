@@ -38,7 +38,7 @@ import com.parrot.freeflight.receivers.DroneReadyReceiver;
 import com.parrot.freeflight.receivers.DroneReadyReceiverDelegate;
 import com.parrot.freeflight.service.DroneControlService;
 
-import org.catrobat.catroid.BuildConfig;
+import org.catrobat.catroid.drone2preview.BuildConfig;
 import org.catrobat.catroid.drone.DroneServiceWrapper;
 
 public class DroneConnection implements StageResourceInterface, DroneReadyReceiverDelegate,

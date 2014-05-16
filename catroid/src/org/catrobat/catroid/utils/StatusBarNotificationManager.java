@@ -29,7 +29,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.SparseArray;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.drone2preview.R;
 import org.catrobat.catroid.ui.MainMenuActivity;
 
 public final class StatusBarNotificationManager {
