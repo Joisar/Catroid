@@ -61,15 +61,15 @@ import com.parrot.freeflight.service.DroneControlService;
 import com.parrot.freeflight.service.intents.DroneStateManager;
 import com.parrot.freeflight.tasks.CheckDroneNetworkAvailabilityTask;
 
-import org.catrobat.catroid.drone2preview.BuildConfig;
 import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.drone2preview.R;
 import org.catrobat.catroid.bluetooth.BluetoothManager;
 import org.catrobat.catroid.bluetooth.DeviceListActivity;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.drone2preview.BuildConfig;
+import org.catrobat.catroid.drone2preview.R;
 import org.catrobat.catroid.legonxt.LegoNXT;
 import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
 import org.catrobat.catroid.ui.BaseActivity;
@@ -491,7 +491,6 @@ public class PreStageActivity extends BaseActivity implements DroneReadyReceiver
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			droneControlService = null; //nothing else to do here
-
 		}
 	};
 
@@ -520,6 +519,7 @@ public class PreStageActivity extends BaseActivity implements DroneReadyReceiver
 	public void onDroneConnected() {
 		// We still waiting for onDroneReady event
 		Log.d(TAG, "onDroneConnected, requesting Config update and wait for drone ready.");
+		droneControlService.resetConfigToDefaults();
 		droneControlService.requestConfigUpdate();
 	}
 
