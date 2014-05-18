@@ -42,8 +42,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.R;
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
@@ -291,7 +291,7 @@ public class ScriptActivity extends BaseActivity {
 
 						Pair pair = new Pair(action, actionOfLook);
 
-						if (firstAction != null && firstActionOfLook != null && firstActionOfLook.equals(firstAction)) {
+						if (firstActionOfLook != null && firstActionOfLook.equals(firstAction)) {
 							actionToRestartMap.put(pair, action);
 							break;
 						} else if (firstAction != null && firstAction.equals(actionOfLook)) {

@@ -52,10 +52,10 @@ import java.util.List;
 public class BroadcastBrick extends BrickBaseType implements BroadcastMessage {
 	private static final long serialVersionUID = 1L;
 
-	private String broadcastMessage;
-	private transient AdapterView<?> adapterView;
+	protected String broadcastMessage;
+    protected transient AdapterView<?> adapterView;
 
-	private Object readResolve() {
+    protected Object readResolve() {
 		MessageContainer.addMessage(broadcastMessage);
 		return this;
 	}
@@ -180,13 +180,13 @@ public class BroadcastBrick extends BrickBaseType implements BroadcastMessage {
 		return view;
 	}
 
-	private void setSpinnerSelection(Spinner spinner) {
+	protected void setSpinnerSelection(Spinner spinner) {
 		int position = MessageContainer.getPositionOfMessageInAdapter(spinner.getContext(), broadcastMessage);
 		spinner.setSelection(position, true);
 	}
 
-	// TODO: BroadcastBrick, BroadcastReceiverBrick and BroadcastWaitBrick contain this identical method.
-	private void showNewMessageDialog(final Spinner spinner) {
+	// TODO: BroadcastBrick and BroadcastReceiverBrick contain this identical method.
+	protected void showNewMessageDialog(final Spinner spinner) {
 		final Context context = spinner.getContext();
 		BrickTextDialog editDialog = new BrickTextDialog() {
 

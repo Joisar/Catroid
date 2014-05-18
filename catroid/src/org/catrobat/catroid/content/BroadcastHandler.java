@@ -116,7 +116,6 @@ public final class BroadcastHandler {
 	private static boolean handleAction(Action action) {
 		for (Sprite sprites : ProjectManager.getInstance().getCurrentProject().getSpriteList()) {
 			for (Action actionOfLook : sprites.look.getActions()) {
-				{
 					Pair pair = new Pair(action, actionOfLook);
 					Action actionToRestart = ScriptActivity.getActionToRestartMap().get(pair);
 					if (actionToRestart != null) {
@@ -124,7 +123,6 @@ public final class BroadcastHandler {
 						return true;
 					}
 					return false;
-				}
 			}
 		}
 		return false;
