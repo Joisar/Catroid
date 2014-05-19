@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.LegoNxtMotorTurnAngleBrick.Motor;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.legonxt.LegoNXT;
 
 public class LegoNxtMotorTurnAngleAction extends TemporalAction {
@@ -43,12 +44,9 @@ public class LegoNxtMotorTurnAngleAction extends TemporalAction {
 		int degreesValue;
 		try {
 			degreesValue = degrees.interpretInteger(sprite);
-        } catch (NumberFormatException numberFormatException) {
+        } catch (InterpretationException interpretationException) {
             degreesValue = 0;
-            Log.e(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", numberFormatException);
-        } catch (ClassCastException classCastException) {
-            degreesValue = 0;
-            Log.e(getClass().getSimpleName(),"Formula interpretation for this specific Brick failed." , classCastException);
+            Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);
         }
 
 		int tmpAngle = degreesValue;

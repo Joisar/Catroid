@@ -24,6 +24,7 @@ package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -38,7 +39,9 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
+import org.catrobat.catroid.utils.Utils;
 
 import java.util.List;
 
@@ -110,7 +113,11 @@ public class ChangeBrightnessByNBrick extends BrickBaseType implements OnClickLi
 		prototypeView = View.inflate(context, R.layout.brick_change_brightness, null);
 		TextView textChangeBrightness = (TextView) prototypeView
 				.findViewById(R.id.brick_change_brightness_prototype_text_view);
-		textChangeBrightness.setText(String.valueOf(changeBrightness.interpretDouble(sprite)));
+        try{
+            textChangeBrightness.setText(String.valueOf(changeBrightness.interpretDouble(sprite)));
+        }catch(InterpretationException interpretationException){
+            Log.d(getClass().getSimpleName(), "Couldn't interpret Formula.", interpretationException);
+        }
 		return prototypeView;
 	}
 

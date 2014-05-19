@@ -26,6 +26,7 @@ import android.util.Log;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 
 public class RepeatAction extends com.badlogic.gdx.scenes.scene2d.actions.RepeatAction {
 
@@ -46,18 +47,13 @@ public class RepeatAction extends com.badlogic.gdx.scenes.scene2d.actions.Repeat
 			isRepeatActionInitialized = true;
 			try {
 				Double intepretation = repeatCount == null ? 0d : repeatCount.interpretDouble(sprite);
-				if (intepretation == null || intepretation.isNaN()) {
-					intepretation = 0d;
-				}
 				repeatCountValue = intepretation.intValue();
-            } catch (NumberFormatException numberFormatException) {
+            } catch (InterpretationException interpretationException) {
                 repeatCountValue = 0;
-                Log.e(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", numberFormatException);
-            } catch (ClassCastException classCastException) {
-                repeatCountValue = 0;
-                Log.e(getClass().getSimpleName(),"Formula interpretation for this specific Brick failed." , classCastException);
+                Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);
             }
 		}
+
 		if (!isCurrentLoopInitialized) {
 			currentTime = 0f;
 			isCurrentLoopInitialized = true;

@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 
 public class IfLogicAction extends Action {
 
@@ -47,18 +48,11 @@ public class IfLogicAction extends Action {
 				return;
 			}
 			Double interpretation = ifCondition.interpretDouble(sprite);
-			if (interpretation.isNaN()) {
-				isInterpretedCorrectly = false;
-				return;
-			}
 			ifConditionValue = interpretation.intValue() != 0 ? true : false;
 			isInterpretedCorrectly = true;
-        } catch (NumberFormatException numberFormatException) {
+        } catch (InterpretationException interpretationException) {
             isInterpretedCorrectly = false;
-            Log.e(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", numberFormatException);
-        } catch (ClassCastException classCastException) {
-            isInterpretedCorrectly = false;
-            Log.e(getClass().getSimpleName(),"Formula interpretation for this specific Brick failed." , classCastException);
+            Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);
         }
 	}
 

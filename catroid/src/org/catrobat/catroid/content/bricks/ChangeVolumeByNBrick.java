@@ -24,6 +24,7 @@ package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -38,6 +39,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import java.util.List;
@@ -119,7 +121,11 @@ public class ChangeVolumeByNBrick extends BrickBaseType implements OnClickListen
 		prototypeView = View.inflate(context, R.layout.brick_change_volume_by, null);
 		TextView textSetVolumenTo = (TextView) prototypeView
 				.findViewById(R.id.brick_change_volume_by_prototype_text_view);
-		textSetVolumenTo.setText(String.valueOf(volume.interpretDouble(sprite)));
+        try{
+            textSetVolumenTo.setText(String.valueOf(volume.interpretDouble(sprite)));
+        }catch(InterpretationException interpretationException){
+            Log.d(getClass().getSimpleName(), "Couldn't interpret Formula.", interpretationException);
+        }
 		return prototypeView;
 	}
 

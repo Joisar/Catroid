@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.legonxt.LegoNXT;
 
 public class LegoNxtPlayToneAction extends TemporalAction {
@@ -43,22 +44,16 @@ public class LegoNxtPlayToneAction extends TemporalAction {
 
 		try {
 			hertzInterpretation = hertz.interpretInteger(sprite);
-        } catch (NumberFormatException numberFormatException) {
+        } catch (InterpretationException interpretationException) {
             hertzInterpretation = 0;
-            Log.e(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", numberFormatException);
-        } catch (ClassCastException classCasteException) {
-            hertzInterpretation = 0;
-            Log.e(getClass().getSimpleName(),"Formula interpretation for this specific Brick failed." , classCasteException);
+            Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);
         }
 
 		try {
 			durationInterpretation = durationInSeconds.interpretInteger(sprite);
-        } catch (NumberFormatException numberFormatException) {
+        } catch (InterpretationException interpretationException) {
             durationInterpretation = 0;
-            Log.e(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", numberFormatException);
-        } catch (ClassCastException classCastException) {
-            durationInterpretation = 0;
-            Log.e(getClass().getSimpleName(),"Formula interpretation for this specific Brick failed." , classCastException);
+            Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);
         }
 
 		LegoNXT.sendBTCPlayToneMessage(hertzInterpretation, durationInterpretation);

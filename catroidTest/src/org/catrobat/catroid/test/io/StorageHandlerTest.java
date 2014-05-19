@@ -23,6 +23,7 @@
 package org.catrobat.catroid.test.io;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.LookData;
@@ -37,6 +38,11 @@ import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.FormulaElement;
+import org.catrobat.catroid.formulaeditor.InternFormulaParser;
+import org.catrobat.catroid.formulaeditor.InternToken;
+import org.catrobat.catroid.formulaeditor.InternTokenType;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
@@ -44,6 +50,8 @@ import org.catrobat.catroid.test.utils.TestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class StorageHandlerTest extends AndroidTestCase {
 	private final StorageHandler storageHandler;
@@ -130,12 +138,12 @@ public class StorageHandlerTest extends AndroidTestCase {
 				(postSpriteList.get(1).getScript(0).getBrickList().get(2)), "size");
 
 		assertEquals("Size was not deserialized right", size,
-				actualSize.interpretFloat(postSpriteList.get(1).getScript(0).getBrickList().get(2).getSprite()));
+				interpretFormula(actualSize,postSpriteList.get(1).getScript(0).getBrickList().get(2).getSprite()));
 		assertEquals("XPosition was not deserialized right", xPosition,
-				actualXPosition.interpretInteger(postSpriteList.get(2).getScript(0).getBrickList().get(0).getSprite())
+                interpretFormula(actualXPosition, postSpriteList.get(2).getScript(0).getBrickList().get(0).getSprite())
 						.intValue());
 		assertEquals("YPosition was not deserialized right", yPosition,
-				actualYPosition.interpretInteger(postSpriteList.get(2).getScript(0).getBrickList().get(0).getSprite())
+                interpretFormula(actualYPosition, postSpriteList.get(2).getScript(0).getBrickList().get(0).getSprite())
 						.intValue());
 
 		assertFalse("paused should not be set in script", preSpriteList.get(1).getScript(0).isPaused());
@@ -195,6 +203,15 @@ public class StorageHandlerTest extends AndroidTestCase {
 			assertTrue("Image " + catroidLookList.get(2).getLookFileName() + " does not exist", testFile.exists());
 		}
 	}
+
+    private Double interpretFormula(Formula formula, Sprite sprite) {
+        try {
+            return formula.interpretDouble(sprite);
+        } catch (InterpretationException interpretationException) {
+            Log.d(getClass().getSimpleName(), "Formula interpretation for Formula failed.", interpretationException);
+        }
+        return Double.NaN;
+    }
 
 	// TODO: add XML header validation based on xsd 
 	//	public void testAliasesAndXmlHeader() {

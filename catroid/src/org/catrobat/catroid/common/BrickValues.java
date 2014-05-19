@@ -58,6 +58,10 @@ public final class BrickValues {
 	public static final int LEGO_DURATION = 1;
 	public static final int LEGO_FREQUENCY = 2;
 
+    //Constants Variables
+    public static final double SET_VARIABLE = 0d;
+    public static final double CHANGE_VARIABLE = 0d;
+
 	// Suppress default constructor for noninstantiability
 	private BrickValues() {
 		throw new AssertionError();

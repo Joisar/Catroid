@@ -24,6 +24,7 @@ package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -38,6 +39,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import java.util.List;
@@ -115,7 +117,11 @@ public class ChangeYByNBrick extends BrickBaseType implements OnClickListener, F
 	public View getPrototypeView(Context context) {
 		prototypeView = View.inflate(context, R.layout.brick_change_y, null);
 		TextView textYMovement = (TextView) prototypeView.findViewById(R.id.brick_change_y_prototype_text_view);
-		textYMovement.setText(String.valueOf(yMovement.interpretInteger(sprite)));
+        try{
+            textYMovement.setText(String.valueOf(yMovement.interpretInteger(sprite)));
+        }catch(InterpretationException interpretationException){
+            Log.d(getClass().getSimpleName(), "Couldn't interpret Formula.", interpretationException);
+        }
 		return prototypeView;
 	}
 

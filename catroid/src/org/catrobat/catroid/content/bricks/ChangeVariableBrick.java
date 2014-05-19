@@ -25,6 +25,7 @@ package org.catrobat.catroid.content.bricks;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +48,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapterWrapper;
@@ -185,7 +187,11 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 		setSpinnerSelection(variableSpinner, null);
 
 		TextView textChangeVariable = (TextView) prototypeView.findViewById(R.id.brick_change_variable_prototype_view);
-		textChangeVariable.setText(String.valueOf(variableFormula.interpretDouble(sprite)));
+        try{
+            textChangeVariable.setText(String.valueOf(variableFormula.interpretDouble(sprite)));
+        }catch(InterpretationException interpretationException){
+            Log.d(getClass().getSimpleName(), "Couldn't interpret Formula.", interpretationException);
+        }
 		return prototypeView;
 	}
 

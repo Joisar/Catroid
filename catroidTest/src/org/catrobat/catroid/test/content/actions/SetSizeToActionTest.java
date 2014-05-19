@@ -40,12 +40,14 @@ import java.io.File;
 
 public class SetSizeToActionTest extends InstrumentationTestCase {
 
-	private static final Formula SIZE = new Formula(70.0f);
+    private static final float SIZE = 70.7f;
+	private final Formula size = new Formula(SIZE);
 	private static final String NOT_NUMERICAL_STRING = "NOT_NUMERICAL_STRING";
 	private static final int IMAGE_FILE_ID = R.raw.icon;
 
 	private File testImage;
 	private final String projectName = "testProject";
+
 
 	@Override
 	protected void setUp() throws Exception {
@@ -81,11 +83,11 @@ public class SetSizeToActionTest extends InstrumentationTestCase {
 		assertEquals("Unexpected initial sprite size value", 1f, sprite.look.getScaleX());
 		assertEquals("Unexpected initial sprite size value", 1f, sprite.look.getScaleY());
 
-		SetSizeToAction action = ExtendedActions.setSizeTo(sprite, SIZE);
+		SetSizeToAction action = ExtendedActions.setSizeTo(sprite, size);
 		action.act(1.0f);
-		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE.interpretFloat(sprite) / 100,
+		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE / 100,
 				sprite.look.getScaleX());
-		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE.interpretFloat(sprite) / 100,
+		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE / 100,
 				sprite.look.getScaleY());
 	}
 
@@ -102,7 +104,7 @@ public class SetSizeToActionTest extends InstrumentationTestCase {
 	}
 
 	public void testNullSprite() {
-		SetSizeToAction action = ExtendedActions.setSizeTo(null, SIZE);
+		SetSizeToAction action = ExtendedActions.setSizeTo(null, size);
 		try {
 			action.act(1.0f);
 			fail("Execution of SetSizeToBrick with null Sprite did not cause a NullPointerException to be thrown");
@@ -114,14 +116,14 @@ public class SetSizeToActionTest extends InstrumentationTestCase {
 	public void testBrickWithStringFormula() {
 		Sprite sprite = new Sprite("testSprite");
 		SetSizeToAction action = ExtendedActions.setSizeTo(sprite,
-				new Formula(String.valueOf(SIZE.interpretFloat(sprite))));
+				new Formula(String.valueOf(SIZE)));
 		action.act(1.0f);
-		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE.interpretFloat(sprite),
-				sprite.look.getSizeInUserInterfaceDimensionUnit());
+		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE,
+                sprite.look.getSizeInUserInterfaceDimensionUnit());
 
 		action = ExtendedActions.setSizeTo(sprite, new Formula(NOT_NUMERICAL_STRING));
 		action.act(1.0f);
-		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE.interpretFloat(sprite),
+		assertEquals("Incorrect sprite size value after SetSizeToBrick executed", SIZE,
 				sprite.look.getSizeInUserInterfaceDimensionUnit());
 
 		action = ExtendedActions.setSizeTo(sprite, null);

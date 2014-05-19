@@ -23,6 +23,7 @@
 package org.catrobat.catroid.test.formulaeditor;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
@@ -34,6 +35,7 @@ import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.InternFormulaParser;
 import org.catrobat.catroid.formulaeditor.InternToken;
 import org.catrobat.catroid.formulaeditor.InternTokenType;
+import org.catrobat.catroid.formulaeditor.InterpretationException;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 
 import java.util.LinkedList;
@@ -77,31 +79,23 @@ public class ParserTestUserVariables extends AndroidTestCase {
 	}
 
 	public void testUserVariableInterpretation() {
-		Formula userVariable = getUservariableByName(PROJECT_USER_VARIABLE);
 		assertEquals("Formula interpretation of ProjectUserVariable is not as expected",
-				USER_VARIABLE_1_VALUE_TYPE_DOUBLE, userVariable.interpretDouble(testSprite));
-
-		userVariable = getUservariableByName(SPRITE_USER_VARIABLE);
+				USER_VARIABLE_1_VALUE_TYPE_DOUBLE, interpretUservariable(PROJECT_USER_VARIABLE));
 		assertEquals("Formula interpretation of SpriteUserVariable is not as expected",
-				USER_VARIABLE_2_VALUE_TYPE_DOUBLE, userVariable.interpretDouble(firstSprite));
-
-		userVariable = getUservariableByName(PROJECT_USER_VARIABLE_2);
+				USER_VARIABLE_2_VALUE_TYPE_DOUBLE, interpretUservariable(SPRITE_USER_VARIABLE));
 		assertEquals("Formula interpretation of ProjectUserVariable2 is not as expected",
-				USER_VARIABLE_3_VALUE_TYPE_STRING, userVariable.interpretString(firstSprite));
+				USER_VARIABLE_3_VALUE_TYPE_STRING, interpretUservariable(PROJECT_USER_VARIABLE_2));
 	}
 
 	public void testUserVariableReseting() {
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
-		Formula userVariable = getUservariableByName(PROJECT_USER_VARIABLE);
-		assertEquals("ProjectUserVariable did not reset", USER_VARIABLE_RESET, userVariable.interpretDouble(testSprite));
 
-		userVariable = getUservariableByName(SPRITE_USER_VARIABLE);
-		assertEquals("SpriteUserVariable did not reset", USER_VARIABLE_RESET, userVariable.interpretDouble(firstSprite));
-
-		userVariable = getUservariableByName(PROJECT_USER_VARIABLE_2);
+		assertEquals("ProjectUserVariable did not reset", USER_VARIABLE_RESET,
+                interpretUservariable(PROJECT_USER_VARIABLE));
+		assertEquals("SpriteUserVariable did not reset", USER_VARIABLE_RESET,
+                interpretUservariable(SPRITE_USER_VARIABLE));
 		assertEquals("ProjectUserVariable2 did not reset", USER_VARIABLE_RESET,
-				userVariable.interpretDouble(firstSprite));
-
+                interpretUservariable(PROJECT_USER_VARIABLE_2));
 	}
 
 	public void testNotExistingUservariable() {
@@ -115,11 +109,17 @@ public class ParserTestUserVariables extends AndroidTestCase {
 		assertEquals("Error Token Index is not as expected", 0, errorTokenIndex);
 	}
 
-	private Formula getUservariableByName(String userVariableName) {
+	private Double interpretUservariable(String userVariableName) {
 		List<InternToken> internTokenList = new LinkedList<InternToken>();
 		internTokenList.add(new InternToken(InternTokenType.USER_VARIABLE, userVariableName));
 		InternFormulaParser internParser = new InternFormulaParser(internTokenList);
 		FormulaElement parseTree = internParser.parseFormula();
-		return new Formula(parseTree);
+        Formula userVariableFormula =  new Formula(parseTree);
+        try {
+            return userVariableFormula.interpretDouble(testSprite);
+        } catch (InterpretationException interpretationException) {
+            Log.d(getClass().getSimpleName(), "Formula interpretation for Sensor failed.", interpretationException);
+        }
+        return Double.NaN;
 	}
 }
